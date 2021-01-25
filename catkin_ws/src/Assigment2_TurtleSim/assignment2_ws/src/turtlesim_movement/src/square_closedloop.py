@@ -25,15 +25,18 @@ class turtlebot():
         return distance
 
     def move2goal(self):
+
+#Setting the starting point
         goal_pose = Pose()
-        goal_pose.x = input("Set your x goal:")
-        goal_pose.x = float(goal_pose.x)
-        goal_pose.y = input("Set your y goal:")
-        goal_pose.y = float(goal_pose.y)
-        distance_tolerance = input("Set your tolerance:")
-        distance_tolerance = float(distance_tolerance)
+        goal_pose.x = 5
+        goal_pose.y = 5
+        distance_tolerance = 0.01
+        angle_tolerance = 0.001
         vel_msg = Twist()
 
+        angle_diff=0.05  #intial value
+
+        print("Let's draw a square")
 
         while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
 
@@ -51,12 +54,169 @@ class turtlebot():
             #Publishing our vel_msg
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
-        #Stopping our robot after the movement is over
-        vel_msg.linear.x = 0
-        vel_msg.angular.z =0
-        self.velocity_publisher.publish(vel_msg)
 
-        rospy.spin()
+#Setting first targets
+        goal_pose.x = 8
+        goal_pose.y = 5
+        vel_msg = Twist()
+
+        vel_msg.angular.z = 20
+        self.velocity_publisher.publish(vel_msg)
+        angle_diff=(atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+        while(angle_diff > angle_tolerance):
+            vel_msg.angular.z = angle_diff
+            #publish the velocity
+            self.velocity_publisher.publish(vel_msg)
+            #calculating the angle
+            angle_diff=(atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+        while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
+            #Porportional Controller
+            #linear velocity in the x-axis:
+            vel_msg.linear.x = 1.5 * sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2))
+            vel_msg.linear.y = 0
+            vel_msg.linear.z = 0
+
+            #angular velocity in the z-axis:
+            vel_msg.angular.x = 0
+            vel_msg.angular.y = 0
+            vel_msg.angular.z = 4 * (atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+            #Publishing our vel_msg
+            self.velocity_publisher.publish(vel_msg)
+            self.rate.sleep()
+
+        #Stoping
+        vel_msg.linear.x = 0
+        vel_msg.linear.y = 0
+        vel_msg.linear.z = 0
+        vel_msg.angular.x = 0
+        vel_msg.angular.y = 0
+        vel_msg.angular.z = 0
+
+#Setting second targets
+        goal_pose.x = 8
+        goal_pose.y = 8
+        vel_msg = Twist()
+
+        vel_msg.angular.z = 20
+        self.velocity_publisher.publish(vel_msg)
+        angle_diff=(atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+        while(angle_diff > angle_tolerance):
+            vel_msg.angular.z = angle_diff
+            #publish the velocity
+            self.velocity_publisher.publish(vel_msg)
+            #calculating the angle
+            angle_diff=(atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+        while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
+            #Porportional Controller
+            #linear velocity in the x-axis:
+            vel_msg.linear.x = 1.5 * sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2))
+            vel_msg.linear.y = 0
+            vel_msg.linear.z = 0
+
+            #angular velocity in the z-axis:
+            vel_msg.angular.x = 0
+            vel_msg.angular.y = 0
+            vel_msg.angular.z = 4 * (atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+            #Publishing our vel_msg
+            self.velocity_publisher.publish(vel_msg)
+            self.rate.sleep()
+
+        #Stoping
+        vel_msg.linear.x = 0
+        vel_msg.linear.y = 0
+        vel_msg.linear.z = 0
+        vel_msg.angular.x = 0
+        vel_msg.angular.y = 0
+        vel_msg.angular.z = 0
+
+#Setting third targets
+        goal_pose.x = 5
+        goal_pose.y = 8
+        vel_msg = Twist()
+
+        vel_msg.angular.z = 20
+        self.velocity_publisher.publish(vel_msg)
+        angle_diff=(atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+        while(angle_diff > angle_tolerance):
+            vel_msg.angular.z = angle_diff
+            #publish the velocity
+            self.velocity_publisher.publish(vel_msg)
+            #calculating the angle
+            angle_diff=(atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+        while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
+            #Porportional Controller
+            #linear velocity in the x-axis:
+            vel_msg.linear.x = 1.5 * sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2))
+            vel_msg.linear.y = 0
+            vel_msg.linear.z = 0
+
+            #angular velocity in the z-axis:
+            vel_msg.angular.x = 0
+            vel_msg.angular.y = 0
+            vel_msg.angular.z = 4 * (atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+            #Publishing our vel_msg
+            self.velocity_publisher.publish(vel_msg)
+            self.rate.sleep()
+
+        #Stoping
+        vel_msg.linear.x = 0
+        vel_msg.linear.y = 0
+        vel_msg.linear.z = 0
+        vel_msg.angular.x = 0
+        vel_msg.angular.y = 0
+        vel_msg.angular.z = 0
+
+#Setting fourth targets
+        goal_pose.x = 5
+        goal_pose.y = 5
+        vel_msg = Twist()
+
+
+        vel_msg.angular.z = 200
+        self.velocity_publisher.publish(vel_msg)
+        #calculating the angle
+        angle_diff=abs((atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta))
+
+        while(angle_diff > angle_tolerance):
+            vel_msg.angular.z = angle_diff
+            #publish the velocity
+            self.velocity_publisher.publish(vel_msg)
+            #calculating the angle
+            angle_diff=abs((atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta))
+
+
+        while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
+            #Porportional Controller
+            #linear velocity in the x-axis:
+            vel_msg.linear.x = 1.5 * sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2))
+            vel_msg.linear.y = 0
+            vel_msg.linear.z = 0
+
+            #angular velocity in the z-axis:
+            vel_msg.angular.x = 0
+            vel_msg.angular.y = 0
+            vel_msg.angular.z = 4 * (atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x) - self.pose.theta)
+
+            #Publishing our vel_msg
+            self.velocity_publisher.publish(vel_msg)
+            self.rate.sleep()
+
+        #Stoping
+        vel_msg.linear.x = 0
+        vel_msg.linear.y = 0
+        vel_msg.linear.z = 0
+        vel_msg.angular.x = 0
+        vel_msg.angular.y = 0
+        vel_msg.angular.z = 0
 
 if __name__ == '__main__':
     try:
