@@ -27,7 +27,7 @@ The code logic consists of the setting up the importing files and defining the v
 
 If you want to change the angular speed, go to line 18, and put the  angular speed instead of the 90. If you want to change the linear speed, go to line 21, and put the linear speed instead of the 2. 
 
-![Circle Screenshot](/videos and screenshots/circle.png)
+![Circle Screenshot](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assigment2_turtlesim/videos%20and%20screenshots/circle.png)
 
 ##########################################################################################
 # [2] ### Drawing Square with specified dimensions ####
