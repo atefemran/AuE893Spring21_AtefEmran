@@ -1,8 +1,0 @@
-prefix=/home/atefemran/AUE893_AtefEmran_Sp21/git_ws/AuE893Spring21_AtefEmran/catkin_ws/src/Assigment2_TurtleSim/assignment2_ws/devel
-
-Name: turtlesim_cleaner
-Description: Description of turtlesim_cleaner
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
