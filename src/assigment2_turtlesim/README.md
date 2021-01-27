@@ -27,7 +27,7 @@ The code logic consists of the setting up the importing files and defining the v
 
 If you want to change the angular speed, go to line 18, and put the  angular speed instead of the 90. If you want to change the linear speed, go to line 21, and put the linear speed instead of the 2. 
 
-![Circle Screenshot](/videos and screenshots/circle.png)
+![Circle Screenshot](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assigment2_turtlesim/videos%20and%20screenshots/circle.png)
 
 ##########################################################################################
 # [2] ### Drawing Square with specified dimensions ####
@@ -39,6 +39,7 @@ Changing the length of each member --> line 16 --> "distance" variable
 Changing the angular speed --> line 17 --> "angular speed" variable
 Changing the number of squares -- line 19 --> "i" variable
 
+![Square Screenshot](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assigment2_turtlesim/videos%20and%20screenshots/square_openloop.png)
 
 ##########################################################################################
 # [3] ### Drawing Square with specified goals/targets ####
@@ -51,6 +52,8 @@ Changing the goals --> the first two line after the "Going to ....." line --> "G
 Changing the tolerance --> lines 33 and 34 --> "distance_tolerance" and "angle_tolerance" variables
 Changing the speed of the turtle --> the propertional controler value inside each loop
 
+
+![Square Screenshot](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assigment2_turtlesim/videos%20and%20screenshots/square_closedloop.png)
 
 ##########################################################################################
 
