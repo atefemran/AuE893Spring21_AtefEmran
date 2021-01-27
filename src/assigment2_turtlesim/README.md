@@ -27,7 +27,7 @@ The code logic consists of the setting up the importing files and defining the v
 
 If you want to change the angular speed, go to line 18, and put the  angular speed instead of the 90. If you want to change the linear speed, go to line 21, and put the linear speed instead of the 2. 
 
-![Alt text](/videos and screenshots/circle.png?raw=true "Circle")
+![Circle Screenshot](/videos and screenshots/circle.png)
 
 ##########################################################################################
 # [2] ### Drawing Square with specified dimensions ####
