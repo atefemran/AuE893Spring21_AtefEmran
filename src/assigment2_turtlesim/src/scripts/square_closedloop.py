@@ -26,7 +26,7 @@ class turtlebot():
 
     def move2goal(self):
 
-#Setting the starting point
+#Going to the starting point ################################################################################################
         goal_pose = Pose()
         goal_pose.x = 5
         goal_pose.y = 5
@@ -55,7 +55,7 @@ class turtlebot():
             self.velocity_publisher.publish(vel_msg)
             self.rate.sleep()
 
-#Setting first targets
+#Going to the  first targets ################################################################################################
         goal_pose.x = 8
         goal_pose.y = 5
         vel_msg = Twist()
@@ -95,7 +95,7 @@ class turtlebot():
         vel_msg.angular.y = 0
         vel_msg.angular.z = 0
 
-#Setting second targets
+#Going to the  second targets ################################################################################################
         goal_pose.x = 8
         goal_pose.y = 8
         vel_msg = Twist()
@@ -135,7 +135,7 @@ class turtlebot():
         vel_msg.angular.y = 0
         vel_msg.angular.z = 0
 
-#Setting third targets
+#Going to the  third targets ################################################################################################
         goal_pose.x = 5
         goal_pose.y = 8
         vel_msg = Twist()
@@ -175,7 +175,7 @@ class turtlebot():
         vel_msg.angular.y = 0
         vel_msg.angular.z = 0
 
-#Setting fourth targets
+#Going to the  fourth targets ################################################################################################
         goal_pose.x = 5
         goal_pose.y = 5
         vel_msg = Twist()

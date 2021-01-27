@@ -14,7 +14,7 @@ def rotate():
     print("Let' draw a circle")
 
 
-    #Converting from angles to radians
+    #Change the angular speed here instead of the 90 [degrees]
     angular_speed = 90*2*PI/360
 
     #The circle path correponds to circular and liear components (x and angular)
@@ -25,11 +25,11 @@ def rotate():
     vel_msg.angular.y = 0
     vel_msg.angular.z = angular_speed
 
-    # Setting the current time for distance calculus
+    # Setting the current time for distance calculations
     t0 = rospy.Time.now().to_sec()
     current_angle = 0
 
-    #change the 6*Pi to the angle you want the turtle to stop at 
+    #Change the 6*Pi to the angle you want the turtle to stop at
     while(current_angle < 6*PI):
         velocity_publisher.publish(vel_msg)
         t1 = rospy.Time.now().to_sec()
