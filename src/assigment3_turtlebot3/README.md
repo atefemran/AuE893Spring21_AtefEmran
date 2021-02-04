@@ -5,19 +5,7 @@
 
 ### Navigating through assignment 3:
 
-					|-> worlds 	-> turtlebot3_wall.world
-					|
-					|-> launch 	-> move.launch
-			|-> src ------	|	   	-> emergency_brake_launch.launch
-			|		|
-			|		|-> scripts   |-> circle.py
-			|		|             |-> square.py
-			|		|             |-> emergency_brake
-			|
-assigment3_turtlebot3-	|
-			|		|-> circle.mp4
-			|-> videos ---	|-> emergency_brake.mp4
-					|-> square.webm
+![Navigation Image](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assigment3_turtlebot3/videos/navigation.jpg)
 
 In Assignment 3 we have 2 tasks:-
 
@@ -66,10 +54,10 @@ In Assignment 3 we have 2 tasks:-
 ### How to run each part?
 
 #### For task 1
-	A) '$ roslaunch assigment3_turtlebot3 move.launch code:=circle'   
+	A) '$ roslaunch assigment3_turtlebot3 move.launch code:=circle'  
 	B) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'  
 
 #### For task 2
-	C) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'   
+	C) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'  
 		  
  
