@@ -5,7 +5,19 @@
 
 ### Navigating through assignment 3:
 
-![navigation](https://github.com/kloya03/AuE893_KartikLoya_Sp21/blob/master/catkin_ws/src/assignment3_turtlebot3/videos/navigation.png)	
+					|-> worlds 	-> turtlebot3_wall.world
+					|
+					|-> launch 	-> move.launch
+			|-> src ------	|	   	-> emergency_brake_launch.launch
+			|		|
+			|		|-> scripts   |-> circle.py
+			|		|             |-> square.py
+			|		|             |-> emergency_brake
+			|
+assigment3_turtlebot3-	|
+			|		|-> circle.mp4
+			|-> videos ---	|-> emergency_brake.mp4
+					|-> square.webm
 
 In Assignment 3 we have 2 tasks:-
 
@@ -29,8 +41,9 @@ In Assignment 3 we have 2 tasks:-
 			
 	
 	Launch File
-		We create one launch file to open our world in gazebo and the
-		 two abovementioned nodes ie. circle and square motion.
+		We create one launch file to open our world in gazebo and with 
+		 argument you can choose one of the two above mentioned nodes 
+		 ie. circle and square motion.
 		
 
 
@@ -50,11 +63,13 @@ In Assignment 3 we have 2 tasks:-
 		script (node) emergency_braking.py
 		
 		
+### How to run each part?
 
-A) '$ roslaunch assignment3_turtlebot3 move.launch code:=circle'  
- 
-B) '$ roslaunch assignment3_turtlebot3 move.launch code:=square'  
+#### For task 1
+	A) '$ roslaunch assigment3_turtlebot3 move.launch code:=circle'   
+	B) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'  
 
-C) '$ roslaunch assignment3_turtlebot3 emergency_brake_wall.launch'   
+#### For task 2
+	C) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'   
 		  
  
