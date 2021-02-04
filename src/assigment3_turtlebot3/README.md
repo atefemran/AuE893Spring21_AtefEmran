@@ -58,6 +58,6 @@ In Assignment 3 we have 2 tasks:-
 	B) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'  
 
 #### For task 2
-	C) '$ roslaunch assigment3_turtlebot3 move.launch code:=square'  
+	C) '$ roslaunch assigment3_turtlebot3 emergency_brake_wall.launch'  
 		  
  
