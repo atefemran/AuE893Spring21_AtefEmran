@@ -49,35 +49,36 @@ class avoidance:
             self.front = self.max
 
         #right
-        right=np.mean(lidar_readings.ranges[265:275])
+        right=np.mean(lidar_readings.ranges[270:299])
         if (right<lidar_readings.range_max):
             self.right = right
         else:
             self.right = self.max
 
         #left
-        left=np.mean(lidar_readings.ranges[85:95])
+        left=np.mean(lidar_readings.ranges[61:90])
         if (left<lidar_readings.range_max):
             self.left = left
         else:
             self.left = self.max
 
     def move(self):
+        rospy.sleep(3)      #Needed while running from launch file
         vel_msg = Twist()
 
         #the input paramters; you have the choice to make them a user input
-        speed_lin = input("Enter the desired Linear Speed (0.3 is prefered):")
-        speed_ang = input("Enter the desired Angular Speed (0.3 is prefered):")
-
+        # speed_lin = input("Enter the desired Linear Speed (0.2 is prefered to match the critical distances):")
+        # speed_ang = input("Enter the desired Angular Speed (0.4 is prefered to match the critical distances):")
+        speed_lin = 0.2
+        speed_ang = 0.4
         speed_lin = float(speed_lin)
         speed_ang = float(speed_ang)
 
-
         #Calculations based on the inputs
-        threshold = speed_lin*1.5/0.3
-        threshold_ang = speed_ang*1.2/0.3
-        critical = speed_lin*1/0.3
-        critical_side = speed_ang*0.05/0.3
+        threshold = 1.5             #in real world make it 0.5
+        threshold_ang = 1.2         #in real world make it 0.3
+        critical = 1.0              #in real world make it 0.3
+        critical_side = 0.05        #in real world make it 0.1
 
         # The indefinite loop
         i=0
@@ -96,7 +97,7 @@ class avoidance:
             diff = self.front_left-self.front_right
 
             #what if we will hit something ahead --> reduce the linear speed and rotate .. take it easy :)
-            while self.front_front<threshold :
+            while self.front_front<threshold and self.front_front>critical :
                 # Reduce linear speed and rotate
                 vel_msg.linear.x = 0.2*speed_lin
                 vel_msg.linear.y = 0
@@ -107,18 +108,52 @@ class avoidance:
                 self.velocity_publisher.publish(vel_msg)
                 self.rate.sleep()
                 diff = self.front_left-self.front_right
+                # what if it became critical from any angle for some reason stop this loop
+                if self.front_front<critical or self.front_left<critical or self.front_right<critical:
+                    break
 
-            #what if it is very close!! --> okay now it is serious, stop!
-            while (self.front<critical):
-                # Stop and rotate
-                vel_msg.linear.x = -0.3*speed_lin
+            #otherwise : keep adjusting!
+            while (self.front_left<threshold_ang and self.front_left>critical):
+                # Reduce linear speed and rotate
+                vel_msg.linear.x = 0.5*speed_lin
                 vel_msg.linear.y = 0
                 vel_msg.linear.z = 0
                 vel_msg.angular.x = 0
                 vel_msg.angular.y = 0
-                vel_msg.angular.z = speed_ang
+                vel_msg.angular.z = diff*speed_ang/abs(diff)
                 self.velocity_publisher.publish(vel_msg)
                 self.rate.sleep()
+                diff = self.front_left-self.front_right
+                # what if it became critical from any angle for some reason stop this loop
+                if self.front_front<critical or self.front_left<critical or self.front_right<critical:
+                    break
+            while (self.front_right<threshold_ang and self.front_right>critical):
+                # Reduce linear speed and rotate
+                vel_msg.linear.x = 0.5*speed_lin
+                vel_msg.linear.y = 0
+                vel_msg.linear.z = 0
+                vel_msg.angular.x = 0
+                vel_msg.angular.y = 0
+                vel_msg.angular.z = diff*speed_ang/abs(diff)
+                self.velocity_publisher.publish(vel_msg)
+                self.rate.sleep()
+                diff = self.front_left-self.front_right
+                # what if it became critical from any angle for some reason stop this loop
+                if self.front_front<critical or self.front_left<critical or self.front_right<critical:
+                    break
+
+            #what if it is very close!! --> okay now it is serious, stop!
+            while (self.front_front<critical or self.front_left<critical or self.front_right<critical):
+                # Stop and rotate
+                vel_msg.linear.x = 0
+                vel_msg.linear.y = 0
+                vel_msg.linear.z = 0
+                vel_msg.angular.x = 0
+                vel_msg.angular.y = 0
+                vel_msg.angular.z = diff/abs(diff)
+                self.velocity_publisher.publish(vel_msg)
+                self.rate.sleep()
+                print(self.front)
 
             #for some reason I will hit something from right side!
             while (self.right<critical_side):
@@ -144,19 +179,6 @@ class avoidance:
                 self.velocity_publisher.publish(vel_msg)
                 self.rate.sleep()
 
-            #otherwise : keep adjusting!
-            while (self.front_left<threshold_ang) or (self.front_right<threshold_ang):
-                # Reduce linear speed and rotate
-                vel_msg.linear.x = 0.8*speed_lin
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = diff*speed_ang/abs(diff)
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
-                diff = self.front_left-self.front_right
-
         # ctrl + C, the node will stop.
         rospy.spin()
 
@@ -167,4 +189,4 @@ try:
 except rospy.ROSInterruptException:
     pass
 
-#Atef Emran @2021
+#Atef Emran @Feb,2021
