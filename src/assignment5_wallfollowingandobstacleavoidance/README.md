@@ -13,15 +13,15 @@ In Assignment 5 we have 3 tasks:-
 
 In all the tasks the same concept is being used where we divid the LiDAR readings into different ranges, and using the mean distance measurment of these ranges, we could estimate the location of the robot to the different obstcales, and make the turtlbot react accordingly. 
 
-	A) Make the turtlebot follow walls
+A) Make the turtlebot follow walls
 		Using script wall_follow.py script and launch files. 
 	
-	B) Make the turtlebot wander in a room and avoid obstcales on Gazebo
+B) Make the turtlebot wander in a room and avoid obstcales on Gazebo
 		Using script wander.py script and launch files. 
 			
-	C) Make the turtlebot wander in a room and avoid obstcales in th real world
+C) Make the turtlebot wander in a room and avoid obstcales in th real world
 		Using script wander.py script and launch files. 
-	![Wander in Real World](https://j.gifs.com/mOA9lO.gif)
+![Wander in Real World](https://j.gifs.com/mOA9lO.gif)
 		
 ### How to run each part?
 
