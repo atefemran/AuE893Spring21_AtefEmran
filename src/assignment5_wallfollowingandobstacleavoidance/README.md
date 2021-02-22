@@ -3,7 +3,7 @@
 ##  ASSIGNMENT 5  
 
 
-### Navigating through assignment 3:
+### Navigating through assignment 5:
 
 ![Navigation Image](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assignment5_wallfollowingandobstacleavoidance/videos/navigation.png)
 
