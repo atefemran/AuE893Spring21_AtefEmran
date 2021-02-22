@@ -21,7 +21,7 @@ B) Make the turtlebot wander in a room and avoid obstcales on Gazebo
 			
 C) Make the turtlebot wander in a room and avoid obstcales in th real world
 		Using script wander.py script and launch files. 
-![Wander in Real World](https://j.gifs.com/mOA9lO.gif)
+![Wander in Real World](https://gifs.com/gif/wander-mOA9lO?muted=false)
 		
 ### How to run each part?
 
