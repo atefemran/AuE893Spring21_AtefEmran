@@ -15,9 +15,11 @@ In all the tasks the same concept is being used where we divid the LiDAR reading
 
 A) Make the turtlebot follow walls
 		Using script wall_follow.py script and launch files. 
+![Wall follow](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment5_wallfollowingandobstacleavoidance/videos/gifs/wall_follow.gif?raw=true)
 	
 B) Make the turtlebot wander in a room and avoid obstcales on Gazebo
 		Using script wander.py script and launch files. 
+![Wander in Gazebo](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment5_wallfollowingandobstacleavoidance/videos/gifs/wander_gazebo.gif?raw=true)
 			
 C) Make the turtlebot wander in a room and avoid obstcales in th real world
 		Using script wander.py script and launch files. 
