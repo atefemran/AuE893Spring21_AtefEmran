@@ -5,17 +5,18 @@
 
 ### Navigating through assignment 6:
 
-![Navigation Image](https://raw.githubusercontent.com/atefemran/AuE893Spring21_AtefEmran/master/src/assignment5_wallfollowingandobstacleavoidance/videos/navigation.png)
+![Navigation Image](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment6_trackingandfollowing/videos/Navigation.png)
 
 ### The tasks
 
 In Assignment 6 we have 2 main tasks:-
 
 A) Make the turtlebot follow a line in Gazebo and in the real world
-![Wall follow](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment5_wallfollowingandobstacleavoidance/videos/gifs/wall_follow.gif?raw=true)
+![Wall follow](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment6_trackingandfollowing/videos/line_following_gazebo.gif)
+![Wall follow](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment6_trackingandfollowing/videos/line_follower_real_world.gif)
 	
 B) Make the turtlebot follow april tags in real world
-![Wander in Gazebo](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment5_wallfollowingandobstacleavoidance/videos/gifs/wander_gazebo.gif?raw=true)
+![Wander in Gazebo](https://github.com/atefemran/AuE893Spring21_AtefEmran/blob/master/src/assignment6_trackingandfollowing/videos/apriltag_follower_real_world.gif)
 			
 
 ### How to run each part?
