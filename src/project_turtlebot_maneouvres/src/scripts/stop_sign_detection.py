@@ -26,7 +26,7 @@ class stopsign:
 
 def main():
     while not rospy.is_shutdown():
-        # stopsignmain=stopsign()
+        stopsignmain=stopsign()
 
 if __name__ == '__main__':
     main()

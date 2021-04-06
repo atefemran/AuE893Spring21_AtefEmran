@@ -5,6 +5,13 @@ from sensor_msgs.msg import LaserScan
 import struct
 import numpy as np
 
+# the logic is dviding the wander condition to three modes based ont he surroundings
+# this is being established by dividing the lidar into 3 regions and selecting the
+# mode based on the front readings:
+# 1) The wander mode - the min lidar reading from the fron region is above the threshold, the TB will try to center its position
+# 2) Slow Down - When the min front measurment is less than the threshold, the linear speed is decreased
+# 3) Critical - when its very close to obstcal, stops and rotates away from obstcale
+
 class avoidance:
 
     def __init__(self):
@@ -19,173 +26,58 @@ class avoidance:
 
     def new_measurment(self,lidar_readings):
         self.rate.sleep()
-        # lidar_ranges = ["lef1", "left2", "left3", "right1", "right2", "right3"]
-        # lidar_min_value = []
-        # for i in range(len(lidar_ranges)):
-        #     start = 90-(i)
-        #     end = 60-(i)
-        #     lidar_min_value[i] = np.mean(lidar_readings.ranges[start:end])
-        #
-        # globals()[lidar_ranges[0]]=lidar_min_value[0]
-        # print(left1)
-        #front_front
-        front_front=(np.mean(lidar_readings.ranges[1:15])+np.mean(lidar_readings.ranges[345:360]))/2
-        if (front_front<lidar_readings.range_max):
-            self.front_front = front_front
-        else:
-            self.front_front = self.max
 
-        #front_left
-        front_left=np.mean(lidar_readings.ranges[16:60])
-        if (front_left<lidar_readings.range_max):
-            self.front_left = front_left
-        else:
-            self.front_left = self.max
-
-        #front_right
-        front_right=np.mean(lidar_readings.ranges[300:344])
-        if (front_right<lidar_readings.range_max):
-            self.front_right = front_right
-        else:
-            self.front_right = 0.999*self.max
-
-        #front
-        front=(np.mean(lidar_readings.ranges[1:5])+np.mean(lidar_readings.ranges[355:360]))/2
-        if (front<lidar_readings.range_max):
-            self.front = front
-        else:
-            self.front = self.max
-
-        #right
-        right=np.mean(lidar_readings.ranges[270:299])
-        if (right<lidar_readings.range_max):
-            self.right = right
-        else:
-            self.right = self.max
-
-        #left
-        left=np.mean(lidar_readings.ranges[61:90])
-        if (left<lidar_readings.range_max):
-            self.left = left
-        else:
-            self.left = self.max
+        self.left = np.minimum(np.min(lidar_readings.ranges[20:75]),self.max)
+        self.left_mean = np.minimum(np.mean(lidar_readings.ranges[20:75]),self.max)
+        self.front = np.minimum(np.minimum(np.min(lidar_readings.ranges[0:22]),np.min(lidar_readings.ranges[338:360])),self.max)
+        self.right = np.minimum(np.min(lidar_readings.ranges[285:340]), self.max)
+        self.right_mean = np.minimum(np.mean(lidar_readings.ranges[285:340]), self.max)
 
     def move(self):
-        rospy.sleep(3)      #Needed while running from launch file
+        rospy.sleep(3)              #Needed while running from launch file
         vel_msg = Twist()
 
-        #the input paramters; you have the choice to make them a user input
-        # speed_lin = input("Enter the desired Linear Speed (0.2 is prefered to match the critical distances):")
-        # speed_ang = input("Enter the desired Angular Speed (0.4 is prefered to match the critical distances):")
-        speed_lin = 0.2
-        speed_ang = 0.4
-        speed_lin = float(speed_lin)
-        speed_ang = float(speed_ang)
+        #Tuning Parameters
+        # (1) threshhold, (2) critical, (3) speeds (linear and angular), (4) difference min and mean
+        speed_lin = 0.15
+        speed_ang = 0.3
 
-        #Calculations based on the inputs
-        threshold = 1.5             #in real world make it 0.5
-        threshold_ang = 1.2         #in real world make it 0.3
-        critical = 1.0              #in real world make it 0.3
-        critical_side = 0.05        #in real world make it 0.1
+        threshold = 0.5             #in real world make it 0.5 | Gazebo 0.5
+        critical = 0.2              #in real world make it 0.3 | Gazebo 0.2
+
+        #let's move it
+        vel_msg.linear.x = speed_lin
+        vel_msg.linear.y = 0
+        vel_msg.linear.z = 0
+        vel_msg.angular.x = 0
+        vel_msg.angular.y = 0
+        vel_msg.angular.z = 0
+        self.velocity_publisher.publish(vel_msg)
+        self.rate.sleep()
 
         # The indefinite loop
-        i=0
-        while i<5:
-            # Keep moving!
-            vel_msg.linear.x = speed_lin
-            vel_msg.linear.y = 0
-            vel_msg.linear.z = 0
-            vel_msg.angular.x = 0
-            vel_msg.angular.y = 0
-            vel_msg.angular.z = 0
-            self.velocity_publisher.publish(vel_msg)
-            self.rate.sleep()
-
+        while True:
             # Let's descover what is surrounding us! (kp value)
-            diff = self.front_left-self.front_right
+            diff = self.left-self.right                 #used when critical
+            diff_mean = self.left_mean-self.right_mean  #used in regular conditions
 
             #what if we will hit something ahead --> reduce the linear speed and rotate .. take it easy :)
-            while self.front_front<threshold and self.front_front>critical :
+            if self.front<threshold and self.front>critical :
                 # Reduce linear speed and rotate
-                vel_msg.linear.x = 0.2*speed_lin
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = diff*speed_ang/abs(diff)
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
-                diff = self.front_left-self.front_right
-                # what if it became critical from any angle for some reason stop this loop
-                if self.front_front<critical or self.front_left<critical or self.front_right<critical:
-                    break
-
-            #otherwise : keep adjusting!
-            while (self.front_left<threshold_ang and self.front_left>critical):
-                # Reduce linear speed and rotate
-                vel_msg.linear.x = 0.5*speed_lin
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = diff*speed_ang/abs(diff)
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
-                diff = self.front_left-self.front_right
-                # what if it became critical from any angle for some reason stop this loop
-                if self.front_front<critical or self.front_left<critical or self.front_right<critical:
-                    break
-            while (self.front_right<threshold_ang and self.front_right>critical):
-                # Reduce linear speed and rotate
-                vel_msg.linear.x = 0.5*speed_lin
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = diff*speed_ang/abs(diff)
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
-                diff = self.front_left-self.front_right
-                # what if it became critical from any angle for some reason stop this loop
-                if self.front_front<critical or self.front_left<critical or self.front_right<critical:
-                    break
-
-            #what if it is very close!! --> okay now it is serious, stop!
-            while (self.front_front<critical or self.front_left<critical or self.front_right<critical):
-                # Stop and rotate
+                vel_msg.linear.x = self.front*speed_lin/threshold
+                vel_msg.angular.z = speed_ang*diff_mean/(abs(diff_mean)+0.000000001)
+                # print('threshhold')
+            elif self.front<critical:
                 vel_msg.linear.x = 0
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = diff/abs(diff)
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
+                vel_msg.angular.z = speed_ang*diff/(abs(diff)+0.000000001)
+                # print('critical')
+            else:
+                vel_msg.linear.x = speed_lin
+                vel_msg.angular.z = speed_ang*diff_mean/(abs(diff_mean)+0.000001)
+                # print('else')
 
-            #for some reason I will hit something from right side!
-            while (self.right<critical_side):
-                # Stop and rotate
-                vel_msg.linear.x = 0
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = speed_ang
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
-
-            #for some reason I will hit something from left side!
-            while (self.left<critical_side):
-                # Stop and rotate
-                vel_msg.linear.x = 0
-                vel_msg.linear.y = 0
-                vel_msg.linear.z = 0
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = -1*speed_ang
-                self.velocity_publisher.publish(vel_msg)
-                self.rate.sleep()
-
+            self.velocity_publisher.publish(vel_msg)
+            self.rate.sleep()
         # ctrl + C, the node will stop.
         rospy.spin()
 
@@ -196,4 +88,4 @@ try:
 except rospy.ROSInterruptException:
     pass
 
-#Atef Emran @Feb,2021
+#Atef Emran @Apr,2021
