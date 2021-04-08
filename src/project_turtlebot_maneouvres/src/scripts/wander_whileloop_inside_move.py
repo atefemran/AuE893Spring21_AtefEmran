@@ -4,8 +4,6 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 import struct
 import numpy as np
-from std_msgs.msg import Int16
-
 
 # the logic is dviding the wander condition to three modes based ont he surroundings
 # this is being established by dividing the lidar into 3 regions and selecting the
@@ -26,8 +24,6 @@ class avoidance:
         self.rate = rospy.Rate(10)
         self.max= 3.5
 
-        self.detect_line_sub = rospy.Subscriber("/detect_line",Int16,self.line_detection)
-
     def new_measurment(self,lidar_readings):
         self.rate.sleep()
 
@@ -37,16 +33,12 @@ class avoidance:
         self.right = np.minimum(np.min(lidar_readings.ranges[285:340]), self.max)
         self.right_mean = np.minimum(np.mean(lidar_readings.ranges[285:340]), self.max)
 
-    def line_detection(self,msg):
-            global line_detection
-            line_detection = msg.data
-
     def move(self):
         rospy.sleep(3)              #Needed while running from launch file
         vel_msg = Twist()
 
         #Tuning Parameters
-        # (1) threshhold, (2) critical, (3) speeds (linear and angular), (4) difference min and mean
+        # (1) threshhold, (2) critical, (3) speeds (linear and angular), (4) difference min and mean, (5) Lidar Ranges
         speed_lin = 0.15
         speed_ang = 0.3
 
@@ -64,7 +56,7 @@ class avoidance:
         self.rate.sleep()
 
         # The indefinite loop
-        while line_detection==0:
+        while True:
             # Let's descover what is surrounding us! (kp value)
             diff = self.left-self.right                 #used when critical
             diff_mean = self.left_mean-self.right_mean  #used in regular conditions
