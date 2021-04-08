@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rospy
 import numpy as np
-from std_msgs.msg import String
+from std_msgs.msg import String                                 ## Change this 
 from darknet_ros_msgs.msg import BoundingBoxes
 
 class stopsign:
@@ -18,7 +18,7 @@ class stopsign:
             # print(box.probability, box.xmin, box.xmax, box.ymin, box.ymax, box.Class)
             identified_class=box.Class
             area = (box.xmax-box.xmin)*(box.ymax-box.ymin)
-            if ((identified_class == "bench") & (box.probability > 0.3) & (area > 0.1)):        #change based on the calibration
+            if ((identified_class == "stop sign") & (box.probability > 0.6) & (area > 1000):        #change based on the calibration
                 self.class_pub.publish(identified_class)
                 self.rate.sleep()
             # elif identified_class != "bench":
