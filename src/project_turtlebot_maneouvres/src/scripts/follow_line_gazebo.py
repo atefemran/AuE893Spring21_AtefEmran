@@ -16,6 +16,11 @@ class LineFollower(object):
         self.detect_line_publisher = rospy.Publisher('/detect_line', Int16, queue_size=10)
         self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.camera_callback)
         #self.image_sub = rospy.Subscriber("/raspicam_node/image/compressed",Image,self.camera_callback)
+        self.stop_detected = 0
+        self.stop_sign_detect = rospy.Subscriber("/detect_stop",Int16,self.stop_detection)
+
+    def stop_detection(self,msg):
+        self.stop_detected = msg.data
 
     def camera_callback(self, data):
         # We select bgr8 because its the OpneCV encoding by default
@@ -53,14 +58,15 @@ class LineFollower(object):
 
         # Calculate centroid of the blob of binary image using ImageMoments
         m = cv2.moments(mask, False)
-        capture_line=0
+        global line_detection
+        line_detection=0
         try:
             cx, cy = m['m10']/m['m00'], m['m01']/m['m00']
-            capture_line=1
-            self.detect_line_publisher.publish(capture_line)             # to let other nodes know that line is detected
+            line_detection=1
+            self.detect_line_publisher.publish(line_detection)             # to let other nodes know that line is detected
         except ZeroDivisionError:
             cx, cy = 10000, 10000
-            self.detect_line_publisher.publish(capture_line)             # to let other nodes know that line is not detected
+            self.detect_line_publisher.publish(line_detection)             # to let other nodes know that line is not detected
 
 
         # Draw the centroid in the resultut image
@@ -80,7 +86,7 @@ class LineFollower(object):
         if diff_y < -8000 :
             vel_msg.linear.x = 0
         else:
-            vel_msg.linear.x = 0.2
+            vel_msg.linear.x = 0.1
 
         # Proportional controller value calculation for angulat speed
         if diff_x < -8000 :
@@ -88,16 +94,17 @@ class LineFollower(object):
         else:
             vel_msg.angular.z = 0.3*diff_x/100
 
-        print("centerioid",cx,cy)
-        print("center",centerx,centery)
-        print(vel_msg.linear.x)
+        # print("centerioid",cx,cy)
+        # print("center",centerx,centery)
+        # print(vel_msg.linear.x)
 
-        if capture_line==1:
+        if ((line_detection==1) & (self.stop_detected!=1)):
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
             self.velocity_publisher.publish(vel_msg)
+
 
     def clean_up(self):
         cv2.destroyAllWindows()
@@ -111,6 +118,7 @@ class LineFollower(object):
 
 def main():
     rospy.init_node('line_following_node', anonymous=True)
+    stop_detection =0
     line_follower_object = LineFollower()
     rate = rospy.Rate(10)
     ctrl_c = False

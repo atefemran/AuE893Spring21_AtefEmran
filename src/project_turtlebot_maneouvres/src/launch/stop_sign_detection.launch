@@ -5,6 +5,6 @@
       <arg name="node_start_delay" default="10" />  
   <node name="listener" pkg="roscpp_tutorials" type="listener" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
   
-  <node pkg="project_turtlebot_maneouvres" type="stop_sign_detection.py" name="stopsign" />
+
   
 </launch>
