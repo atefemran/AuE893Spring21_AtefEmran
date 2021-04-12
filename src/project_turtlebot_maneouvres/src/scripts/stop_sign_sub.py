@@ -15,25 +15,27 @@ class stopsign:
         self.detect_line_sub = rospy.Subscriber("/detect_line",Int16,self.line_detection)
         self.rate = rospy.Rate(10)
 
+
+
     def line_detection(self,msg):
         global line_detection
         line_detection = msg.data
 
     def newprediction(self,bounding_box):
         self.rate.sleep()
+        global stop_sign_detect
         prediction = bounding_box.bounding_boxes
         for box in prediction:
-            global stop_sign_detect
             identified_class=box.Class
             probability = float(box.probability)
-            area = (box.xmax-box.xmin)*(box.ymax-box.ymin)
-            if ((identified_class == "stop sign") & (probability > 0.5) & (area > 1)):        #change based on the calibration
+            area = abs(box.xmax-box.xmin)*abs(box.ymax-box.ymin)
+            if ((identified_class == 'stop sign') and (area >= 6250)):        #change based on the calibration
                 stop_sign_detect = 1
-            self.stop_sign_detect_pub.publish(stop_sign_detect)
+                self.stop_sign_detect_pub.publish(stop_sign_detect)
+            break
             rospy.sleep(0.1)
 
-
-
+stopsign()
 vel_msg = Twist()
 line_detection = 0
 stop_sign_detect = 0
@@ -57,34 +59,3 @@ while True:
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
         rospy.sleep(3)
-
-
-
-# import rospy
-# import numpy as np
-# from darknet_ros_msgs.msg import BoundingBoxes
-#
-# class stopsign:
-#     def __init__(self):
-#         rospy.init_node('stopsignprobability', anonymous=True)
-#         self.yolo_sub = rospy.Subscriber('/darknet_ros/bounding_boxes',BoundingBoxes,self.newprediction)
-#         self.rate = rospy.Rate(10)
-#
-#     def newprediction(self,bounding_box):
-#         self.rate.sleep()
-#         prediction = bounding_box.bounding_boxes
-#         for box in prediction:
-#             identified_class=box.Class
-#             area = (box.xmax-box.xmin)*(box.ymax-box.ymin)
-#             if ((identified_class == "stop sign") & (box.probability > 0.6) & (area > 1000):        #change based on the calibration
-#                 self.stop_sign.publish(identified_class)
-#                 self.rate.sleep()
-#             # elif identified_class != "bench":
-#             #     self.stop_sign.publish("non")
-#
-# def main():
-#     while not rospy.is_shutdown():
-#         stopsignmain=stopsign()
-#
-# if __name__ == '__main__':
-#     main()

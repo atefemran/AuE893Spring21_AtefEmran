@@ -16,11 +16,11 @@ class LineFollower(object):
         self.detect_line_publisher = rospy.Publisher('/detect_line', Int16, queue_size=10)
         self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.camera_callback)
         #self.image_sub = rospy.Subscriber("/raspicam_node/image/compressed",Image,self.camera_callback)
-        self.stop_detected = 0
         self.stop_sign_detect = rospy.Subscriber("/detect_stop",Int16,self.stop_detection)
 
     def stop_detection(self,msg):
-        self.stop_detected = msg.data
+        global stop_detected
+        stop_detected = msg.data
 
     def camera_callback(self, data):
         # We select bgr8 because its the OpneCV encoding by default
@@ -86,7 +86,7 @@ class LineFollower(object):
         if diff_y < -8000 :
             vel_msg.linear.x = 0
         else:
-            vel_msg.linear.x = 0.1
+            vel_msg.linear.x = 0.15
 
         # Proportional controller value calculation for angulat speed
         if diff_x < -8000 :
@@ -98,13 +98,20 @@ class LineFollower(object):
         # print("center",centerx,centery)
         # print(vel_msg.linear.x)
 
-        if ((line_detection==1) & (self.stop_detected!=1)):
+        if ((line_detection==1) & (stop_detected!=1)):
             vel_msg.linear.y = 0
             vel_msg.linear.z = 0
             vel_msg.angular.x = 0
             vel_msg.angular.y = 0
             self.velocity_publisher.publish(vel_msg)
-
+        elif stop_detected==1:
+            vel_msg.linear.x = 0
+            vel_msg.linear.y = 0
+            vel_msg.linear.z = 0
+            vel_msg.angular.x = 0
+            vel_msg.angular.y = 0
+            vel_msg.angular.z = 0
+            self.velocity_publisher.publish(vel_msg)
 
     def clean_up(self):
         cv2.destroyAllWindows()
@@ -131,6 +138,7 @@ def main():
     while not ctrl_c:
         rate.sleep()
 
+stop_detected =0
 if __name__ == '__main__':
         main()
 

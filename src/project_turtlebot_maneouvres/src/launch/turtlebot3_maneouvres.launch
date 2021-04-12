@@ -22,5 +22,6 @@
 
   <node pkg="project_turtlebot_maneouvres" type="wander.py" name="wander" />
   <node pkg="project_turtlebot_maneouvres" type="follow_line_gazebo.py" name="followline" />
+  <node pkg="project_turtlebot_maneouvres" type="stop_sign_sub.py" name="stopsign" />
 
 </launch>

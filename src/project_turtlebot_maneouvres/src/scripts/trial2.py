@@ -24,19 +24,17 @@ class stopsign:
         prediction = bounding_box.bounding_boxes
         for box in prediction:
             global stop_sign_detect
+            stop_sign_detect = 0
             identified_class=box.Class
             probability = float(box.probability)
             area = (box.xmax-box.xmin)*(box.ymax-box.ymin)
-            if ((identified_class == "stop sign") & (probability > 0.5) & (area > 1)):        #change based on the calibration
+            if ((identified_class == "stop sign") & (probability > 0) & (area > 0):        #change based on the calibration
                 stop_sign_detect = 1
             self.stop_sign_detect_pub.publish(stop_sign_detect)
             rospy.sleep(0.1)
-        
-
 
 vel_msg = Twist()
 line_detection = 0
-stop_sign_detect = 0
 while True:
     stopsign()
     if line_detection ==1:
